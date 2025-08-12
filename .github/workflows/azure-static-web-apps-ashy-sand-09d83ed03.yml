@@ -15,6 +15,9 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
+      - name: Set API base for prod
+        run: echo "NEXT_PUBLIC_API_BASE=https://po-geo-api-eric.azurewebsites.net" >> $GITHUB_ENV
+
       - name: Install deps
         run: npm ci
 
