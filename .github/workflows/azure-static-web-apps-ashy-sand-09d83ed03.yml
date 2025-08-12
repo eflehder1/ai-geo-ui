@@ -24,18 +24,10 @@ jobs:
       - name: Build Next.js app
         run: npm run build
 
-      # Install Azure CLI
       - name: Install Azure CLI
         run: |
           curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
-      # Log in with publish profile (store in repo secrets)
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_STATICWEBAPP_CREDENTIALS }}
-
-      # Deploy using Azure CLI (fast, no polling)
       - name: Deploy to Azure Static Web App
         run: |
           az staticwebapp upload \
@@ -43,4 +35,5 @@ jobs:
             --resource-group aitest \
             --source . \
             --app-location . \
-            --output-location .next
+            --output-location .next \
+            --api-token "${{ secrets.AZURE_STATICWEBAPP_API_TOKEN }}"
