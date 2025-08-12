@@ -1,11 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-    eslint: {
-        // ? This makes Next.js ignore ESLint errors during build
-        ignoreDuringBuilds: true,
-    },
-    /* other config options here */
+    eslint: { ignoreDuringBuilds: true },
+    output: "export",           // writes to ./out on build
+    images: { unoptimized: true } // avoids server image pipeline
 };
-
 export default nextConfig;
