@@ -7,6 +7,8 @@ on:
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
+    concurrency: { group: deploy, cancel-in-progress: true }
+
     steps:
       - uses: actions/checkout@v4
 
@@ -14,22 +16,23 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
+          # If your app is in a subfolder, include its lockfile here too
+          cache-dependency-path: |
+            package-lock.json
+            ai-geo-ui/package-lock.json
 
+      # If your Next app is in a subfolder, add working-directory: ai-geo-ui to the next 3 steps
       - name: Set API base for prod
         run: echo "NEXT_PUBLIC_API_BASE=https://po-geo-api-eric.azurewebsites.net" >> $GITHUB_ENV
 
       - name: Install deps
-        run: npm ci
+        run: npm ci --prefer-offline
 
       - name: Build (static export to ./out)
         run: npm run build
 
-      - name: Install SWA CLI
-        run: npm i -g @azure/static-web-apps-cli
-
+      # Use npx so we don’t install a global CLI every run
       - name: Deploy via SWA CLI
         env:
           SWA_CLI_DEPLOYMENT_TOKEN: ${{ secrets.AZURE_STATICWEBAPP_API_TOKEN }}
-        run: |
-          # deploy the exported folder to Production
-          swa deploy ./out --env production
+        run: npx -y @azure/static-web-apps-cli@1.1.9 deploy ./out --env production
