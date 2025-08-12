@@ -3,10 +3,6 @@
 
 import { useState } from "react";
 
-import dynamic from "next/dynamic";
-const STLViewer = dynamic(() => import("../components/STLViewer"), { ssr: false });
-
-
 export default function Home() {
     const [prompt, setPrompt] = useState("");
     const [loading, setLoading] = useState(false);
